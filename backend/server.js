@@ -13,7 +13,9 @@ const db = require('./db');
 // ------------------------ CONFIGURAZIONE SERVER ------------------------
 const app = express();
 const PORT = 3000;
-
+// ✅ Middleware per parsing del body
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 // ------------------------ CONFIGURAZIONE SMTP ------------------------
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
