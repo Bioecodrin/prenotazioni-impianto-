@@ -211,7 +211,7 @@
 <div id="trasporti"></div>
 
 <script>
-    fetch('/impianto/richieste-trasporto')
+ fetch('/cliente/richieste-trasporto')
         .then(res => res.json())
         .then(data => {
             const trasportiDiv = document.getElementById('trasporti');

@@ -20,20 +20,16 @@ const transporter = nodemailer.createTransport({
     port: 587,
     secure: false,
     auth: {
-        user: 'diegotrinchillo@gmail.com',
-        pass: 'tjfjegkdylmxftqy'
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
     }
 });
-
 // ------------------------ UPLOAD CONFIG ------------------------
 const upload = multer({ dest: path.join(__dirname, 'uploads') });
 
 // ------------------------ MIDDLEWARE ------------------------
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
 app.use(session({
-    secret: 'segreto_super_sicuro',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true
 }));
@@ -185,9 +181,15 @@ app.post('/cliente/invia-risposta', (req, res) => {
         }
     );
 });
-// Fuori da qualsiasi altro blocco
-app.post('/cliente/trasporto', (req, res) => {
+// Visualizza richieste di trasporto del cliente loggato
+app.get('/cliente/richieste-trasporto', (req, res) => {
     if (!req.session.utente) return res.status(403).send('Accesso negato');
+
+    db.all('SELECT * FROM richieste_trasporto WHERE cliente_id = ? ORDER BY data_trasporto DESC', [req.session.utente.id], (err, rows) => {
+        if (err) return res.status(500).send('Errore nel recupero delle richieste.');
+        res.json(rows);
+    });
+});
 
     const {
         richiedente, produttore, codice_cer, tipo_automezzo,
@@ -210,8 +212,6 @@ app.post('/cliente/trasporto', (req, res) => {
             res.send('Richiesta trasporto inviata correttamente ✅');
         }
     );
-});
-
 // ------------------------ IMPIANTO ------------------------
 
 app.post('/impianto/login', (req, res) => {
@@ -289,7 +289,7 @@ Impianto
             `;
 
             transporter.sendMail({
-                from: '"Impianto" <diegotrinchillo@gmail.com>',
+                from: '"Impianto ecodrin" <diegotrinchillo@gmail.com>',
                 to: row.email,
                 subject: `Aggiornamento richiesta trasporto #${row.id}`,
                 text: testoMail
