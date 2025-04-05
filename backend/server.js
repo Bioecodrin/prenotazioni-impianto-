@@ -181,15 +181,9 @@ app.post('/cliente/invia-risposta', (req, res) => {
         }
     );
 });
-// Visualizza richieste di trasporto del cliente loggato
-app.get('/cliente/richieste-trasporto', (req, res) => {
+// richiesta di trasporto dal cliente loggato
+app.post('/cliente/richiesta-trasporto', (req, res) => {
     if (!req.session.utente) return res.status(403).send('Accesso negato');
-
-    db.all('SELECT * FROM richieste_trasporto WHERE cliente_id = ? ORDER BY data_trasporto DESC', [req.session.utente.id], (err, rows) => {
-        if (err) return res.status(500).send('Errore nel recupero delle richieste.');
-        res.json(rows);
-    });
-});
 
     const {
         richiedente, produttore, codice_cer, tipo_automezzo,
@@ -212,6 +206,7 @@ app.get('/cliente/richieste-trasporto', (req, res) => {
             res.send('Richiesta trasporto inviata correttamente ✅');
         }
     );
+});
 // ------------------------ IMPIANTO ------------------------
 
 app.post('/impianto/login', (req, res) => {
