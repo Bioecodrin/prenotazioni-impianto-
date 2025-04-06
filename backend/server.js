@@ -243,6 +243,15 @@ app.get('/impianto/prenotazioni', (req, res) => {
         res.json(rows);
     });
 });
+// Visualizza richieste di trasporto del cliente loggato
+app.get('/cliente/richieste-trasporto', (req, res) => {
+    if (!req.session.utente) return res.status(403).send('Accesso negato');
+
+    db.all('SELECT * FROM richieste_trasporto WHERE cliente_id = ? ORDER BY data_trasporto DESC', [req.session.utente.id], (err, rows) => {
+        if (err) return res.status(500).send('Errore nel recupero delle richieste.');
+        res.json(rows);
+    });
+});
 // Visualizza tutte le richieste di trasporto
 app.get('/impianto/richieste-trasporto', (req, res) => {
     if (!req.session.admin) return res.status(403).send('Accesso negato');
