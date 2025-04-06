@@ -184,7 +184,7 @@ app.post('/cliente/invia-risposta', (req, res) => {
     );
 });
 // richiesta di trasporto dal cliente loggato
-app.post('/cliente/richiesta-trasporto', (req, res) => {
+app.post('/cliente/richieste-trasporto', (req, res) => {
     if (!req.session.utente) return res.status(403).send('Accesso negato');
 
     const {
